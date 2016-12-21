@@ -40,12 +40,25 @@ class AliceContext extends Context
             if (in_array($id, $files)) {
                 foreach ($loader->load($fixture) as $object) {
                     if (in_array(get_class($object), $persistable)) {
-                        $this->getEntityManager()->persist($object);
+                        $this->persistObject($object, $loader->getProcessors());
                     }
                 }
 
                 $this->getEntityManager()->flush();
             }
+        }
+    }
+
+    private function persistObject($object, $processors)
+    {
+        foreach ($processors as $processor) {
+            $processor->preProcess($object);
+        }
+
+        $this->getEntityManager()->persist($object);
+
+        foreach ($processors as $processor) {
+            $processor->postProcess($object);
         }
     }
 

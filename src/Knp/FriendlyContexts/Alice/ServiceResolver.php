@@ -4,35 +4,35 @@ namespace Knp\FriendlyContexts\Alice;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ProviderResolver
+class ServiceResolver
 {
     private $container;
-    private $providers;
+    private $serviceNames;
 
-    public function __construct(ContainerInterface $container, array $providers)
+    public function __construct(ContainerInterface $container, array $serviceNames)
     {
         $this->container = $container;
-        $this->providers = $providers;
+        $this->serviceNames = $serviceNames;
     }
 
     public function all()
     {
         $services = [];
 
-        foreach ($this->providers as $provider) {
-            if (null !== $service = $this->getFromClass($provider)) {
+        foreach ($this->serviceNames as $serviceName) {
+            if (null !== $service = $this->getFromClass($serviceName)) {
                 $services[] = $service;
                 continue;
             }
-            if (null !== $service = $this->getFromContainer($provider)) {
+            if (null !== $service = $this->getFromContainer($serviceName)) {
                 $services[] = $service;
                 continue;
             }
-            if (null !== $service = $this->getFromKernel($provider)) {
+            if (null !== $service = $this->getFromKernel($serviceName)) {
                 $services[] = $service;
                 continue;
             }
-            throw new \Exception(sprintf('Cannot find any class or service called "%s"', $provider));
+            throw new \Exception(sprintf('Cannot find any class or service called "%s"', $serviceName));
         }
 
         return $services;

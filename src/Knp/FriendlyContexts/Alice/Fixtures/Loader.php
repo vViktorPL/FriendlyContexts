@@ -3,20 +3,29 @@
 namespace Knp\FriendlyContexts\Alice\Fixtures;
 
 use Knp\FriendlyContexts\Alice\ProviderResolver;
+use Knp\FriendlyContexts\Alice\ServiceResolver;
 use Nelmio\Alice\Fixtures\Loader as BaseLoader;
 
 class Loader extends BaseLoader
 {
     private $cache = [];
 
-    public function __construct($locale, ProviderResolver $providers)
+    private $processors = [];
+
+    public function __construct($locale, ServiceResolver $providers, ServiceResolver $processors)
     {
         parent::__construct($locale, $providers->all());
+        $this->processors = $processors->all();
     }
 
     public function getCache()
     {
         return $this->cache;
+    }
+
+    public function getProcessors()
+    {
+        return $this->processors;
     }
 
     public function clearCache()
